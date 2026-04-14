@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🎮 3D GAMEVERSE · 10 PLAYABLE GAMES</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #0a0c1a 0%, #151b2e 50%, #0d1020 100%);
+      min-height: 100vh;
+      color: white;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+      background: rgba(10, 15, 30, 0.7);
+      backdrop-filter: blur(15px);
+      margin: 1rem 2rem;
+      border-radius: 60px 20px 60px 20px;
+      border: 2px solid #ffd78c;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px #ffb34733;
+    }
+    .header h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffe99c, #ffb77c);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 30px #ffb347;
+    }
+    .header p {
+      font-size: 1.2rem;
+      color: #ffe4c4;
+    }
+    
+    /* Game Grid */
+    .games-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      padding: 20px 30px 40px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    
+    /* Game Card */
+    .game-card {
+      background: rgba(20, 25, 45, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 30px 10px 30px 10px;
+      border: 2px solid #ffd78c;
+      box-shadow: 0 15px 30px #00000080, 0 0 20px #ffb34766, inset 0 0 20px #3a3a6a33;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 40px #000, 0 0 40px #ffcc66;
+      border-color: #ffeaa6;
+    }
+    
+    .game-header {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      background: linear-gradient(90deg, #1e2444, #151b30);
+      border-bottom: 1px solid #ffd78c;
+    }
+    .game-header i {
+      font-size: 2.5rem;
+      margin-right: 15px;
+      color: #ffd78c;
+      text-shadow: 0 0 15px #ffb347;
+    }
+    .game-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff5e0;
+      flex: 1;
+    }
+    .game-header .badge {
+      background: #ffd966dd;
+      color: #0f1222;
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 0 #7f4f24;
+    }
+    
+    .game-frame {
+      width: 100%;
+      height: 280px;
+      border: none;
+      background: #0a0e1c;
+    }
+    
+    .game-controls {
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1a1f35aa;
+    }
+    .game-controls button {
+      background: #ffb347;
+      border: none;
+      color: #0f1222;
+      font-weight: 700;
+      padding: 8px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 4px 0 #8b5e2e;
+      transition: all 0.1s;
+      border: 1px solid #ffe09c;
+    }
+    .game-controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #8b5e2e;
+      background: #ffc56e;
+    }
+    .game-controls button:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #8b5e2e;
+    }
+    .fullscreen-btn {
+      background: #6c5ce7 !important;
+      box-shadow: 0 4px 0 #3d2e8a !important;
+      border-color: #b8a9ff !important;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 25px;
+      background: #0a0e1c80;
+      backdrop-filter: blur(10px);
+      margin: 20px 30px;
+      border-radius: 40px;
+      border: 1px solid #ffd78c;
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 { font-size: 2.5rem; }
+      .games-container { grid-template-columns: 1fr; padding: 15px; }
+      .header { margin: 0.5rem; }
+    }
+    
+    /* Modal for fullscreen game */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #000000e0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+    .modal-content {
+      width: 95%; height: 95%;
+      margin: 1% auto;
+      background: #111827;
+      border-radius: 20px;
+      border: 3px solid #ffd78c;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      padding: 15px 25px;
+      background: #1e2444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #ffb347;
+    }
+    .modal-header h3 { color: #ffe9c7; font-size: 1.8rem; }
+    .close-btn {
+      background: #ff6b6b;
+      border: none;
+      color: white;
+      font-size: 1.8rem;
+      width: 45px; height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 0 #8b3a3a;
+    }
+    .modal-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎮 3D GAMEVERSE · PLAY NOW</h1>
+  <p><i class="fas fa-gamepad"></i> 10 Epic Games · All Playable · Click to Play <i class="fas fa-cube"></i></p>
+</div>
+
+<div class="games-container" id="gamesContainer"></div>
+
+<div class="footer">
+  <i class="fas fa-dice-d20"></i> Every game is embedded & playable · Made with ❤️ · Full 3D Experience <i class="fas fa-vr-cardboard"></i>
+</div>
+
+<!-- Fullscreen Modal -->
+<div class="modal" id="gameModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Game Title</h3>
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+    </div>
+    <iframe id="modalFrame" class="modal-frame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script>
+  // Game definitions with embedded content
+  const games = [
+    {
+      name: "CHESS",
+      icon: "fa-chess",
+      badge: "♜ 3D ROYAL",
+      html: () => {
+        return `
+          <!DOCTYPE html>
+          <html>
+          <head><style>
+            body { margin:0; overflow:hidden; background:#2c3e50; font-family:Arial; }
+            #info { position:absolute; top:10px; left:10px; color:white; background:#00000080; padding:5px 15px; border-radius:20px; }
+          </style></head>
+          <body>
+            <div id="info">♜ 3D Chess · Drag to rotate</div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+            <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"><\/script>
+            <script>
+              const scene = new THREE.Scene(); scene.background = new THREE.Color(0x1a2a3a);
+              const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000); camera.position.set(5,6,8); camera.lookAt(0,0,0);
+              const renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth, window.innerHeight); renderer.shadowMap.enabled=true; document.body.appendChild(renderer.domElement);
+              const light1 = new THREE.DirectionalLight(0xffeedd,1); light1.position.set(3,8,4); light1.castShadow=true; scene.add(light1);
+              const light2 = new THREE.AmbientLight(0x404060); scene.add(light2);
+              const grid = new THREE.GridHelper(8,8,0xffaa00,0x333344); grid.position.y=0.01; scene.add(grid);
+              
+              const boardGroup = new THREE.Group();
+              const squareSize = 0.9, boardSize = 8;
+              for(let i=0; i<boardSize; i++){
+                for(let j=0; j<boardSize; j++){
+                  const geom = new THREE.BoxGeometry(squareSize,0.1,squareSize);
+                  const mat = new THREE.MeshStandardMaterial({color: (i+j)%2===0 ? 0xf0d9b5 : 0xb58863, roughness:0.5});
+                  const square = new THREE.Mesh(geom, mat); square.position.set(i-3.5, 0, j-3.5); square.receiveShadow=true; boardGroup.add(square);
+                }
+              }
+              scene.add(boardGroup);
+              
+              function createPiece(type, color, x, z){
+                const group = new THREE.Group();
+                let mat = new THREE.MeshStandardMaterial({color: color==='w'?0xeeeeee:0x222222, roughness:0.3, emissive:new THREE.Color(0x111111)});
+                if(type==='p'){ const base=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.4,0.2),mat); base.position.y=0.2; group.add(base); const head=new THREE.Mesh(new THREE.SphereGeometry(0.25),mat); head.position.y=0.55; group.add(head); }
+                else if(type==='r'){ const base=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.45,0.3),mat); base.position.y=0.25; group.add(base); const top=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.4,0.5),mat); top.position.y=0.65; group.add(top); }
+                else if(type==='n'){ const base=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.45,0.3),mat); base.position.y=0.25; group.add(base); const head=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.5),mat); head.position.y=0.7; head.rotation.x=0.3; group.add(head); }
+                else if(type==='b'){ const base=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.4,0.3),mat); base.position.y=0.25; group.add(base); const top=new THREE.Mesh(new THREE.ConeGeometry(0.25,0.5),mat); top.position.y=0.7; group.add(top); const ball=new THREE.Mesh(new THREE.SphereGeometry(0.12),new THREE.MeshStandardMaterial({color:0xffaa00})); ball.position.y=1.0; group.add(ball); }
+                else if(type==='q'){ const base=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.5,0.4),mat); base.position.y=0.3; group.add(base); const crown=new THREE.Mesh(new THREE.ConeGeometry(0.35,0.5,8),mat); crown.position.y=0.8; group.add(crown); }
+                else if(type==='k'){ const base=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.5,0.4),mat); base.position.y=0.3; group.add(base); const cross=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.6,0.2),mat); cross.position.y=0.9; group.add(cross); }
+                group.position.set(x-3.5, 0.15, z-3.5); group.castShadow=true; group.receiveShadow=true;
+                return group;
+              }
+              
+              const pieces = [];
+              const initial = [ ['r','n','b','q','k','b','n','r'], ['p','p','p','p','p','p','p','p'] ];
+              for(let i=0;i<8;i++){ pieces.push(createPiece(initial[0][i],'b',i,0)); pieces.push(createPiece(initial[1][i],'b',i,1)); }
+              for(let i=0;i<8;i++){ pieces.push(createPiece(initial[0][i],'w',i,7)); pieces.push(createPiece(initial[1][i],'w',i,6)); }
+              pieces.forEach(p=>scene.add(p));
+              
+              let isDragging=false, selectedPiece=null, mouse=new THREE.Vector2(), raycaster=new THREE.Raycaster();
+              renderer.domElement.addEventListener('mousedown',(e)=>{ mouse.x=(e.clientX/renderer.domElement.clientWidth)*2-1; mouse.y=-(e.clientY/renderer.domElement.clientHeight)*2+1; raycaster.setFromCamera(mouse,camera); const intersects=raycaster.intersectObjects(pieces,true); if(intersects.length>0){ selectedPiece=intersects[0].object.parent; isDragging=true; } });
+              renderer.domElement.addEventListener('mousemove',(e)=>{ if(isDragging && selectedPiece){ raycaster.setFromCamera(mouse,camera); const intersects=raycaster.intersectObjects(boardGroup.children); if(intersects.length>0){ const pos=intersects[0].object.position; selectedPiece.position.x=pos.x; selectedPiece.position.z=pos.z; } } });
+              renderer.domElement.addEventListener('mouseup',()=>{ isDragging=false; selectedPiece=null; });
+              
+              function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); }
+              animate();
+              window.addEventListener('resize',()=>{ camera.aspect=1; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+            <\/script>
+          </body>
+          </html>
+        `;
+      }
+    },
+    {
+      name: "LUDO",
+      icon: "fa-dice",
+      badge: "🎲 3D DICE",
+      html: () => {
+        return `
+          <!DOCTYPE html><html><head><style>body{margin:0;overflow:hidden;background:#1a1a2e;}</style></head><body>
+            <div style="position:absolute;top:10px;left:10px;color:white;background:#00000080;padding:5px 15px;border-radius:20px;">🎲 3D Ludo · Click Dice</div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+            <script>
+              const scene=new THREE.Scene(); scene.background=new THREE.Color(0x1e3a5f);
+              const camera=new THREE.PerspectiveCamera(45,1,0.1,100); camera.position.set(5,8,10); camera.lookAt(0,0,0);
+              const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth,window.innerHeight); renderer.shadowMap.enabled=true; document.body.appendChild(renderer.domElement);
+              const light=new THREE.DirectionalLight(0xfff5d1,1); light.position.set(5,12,8); light.castShadow=true; scene.add(light);
+              scene.add(new THREE.AmbientLight(0x404060));
+              
+              const board=new THREE.Mesh(new THREE.BoxGeometry(8,0.2,8),new THREE.MeshStandardMaterial({color:0xe8cfa6})); board.position.y=-0.1; board.receiveShadow=true; scene.add(board);
+              const colors=[0xff4136,0x2ecc40,0xff851b,0x0074d9];
+              for(let i=0;i<4;i++){ const home=new THREE.Mesh(new THREE.BoxGeometry(2.5,0.3,2.5),new THREE.MeshStandardMaterial({color:colors[i]})); home.position.set((i%2===0?2:-2),0.1,(i<2?2:-2)); home.receiveShadow=true; scene.add(home); }
+              
+              const diceGroup=new THREE.Group();
+              const diceMat=new THREE.MeshStandardMaterial({color:0xffffff});
+              const dice=new THREE.Mesh(new THREE.BoxGeometry(1.2,1.2,1.2),diceMat); dice.castShadow=true; dice.receiveShadow=true; diceGroup.add(dice);
+              const dots=[]; for(let i=0;i<6;i++){ const dot=new THREE.Mesh(new THREE.SphereGeometry(0.1),new THREE.MeshStandardMaterial({color:0x000000})); dot.visible=false; diceGroup.add(dot); dots.push(dot); }
+              diceGroup.position.y=1.5; scene.add(diceGroup);
+              
+              let rolling=false, rollValue=1;
+              function rollDice(){ rolling=true; let t=0; const interval=setInterval(()=>{ diceGroup.rotation.x=Math.random()*Math.PI*2; diceGroup.rotation.y=Math.random()*Math.PI*2; diceGroup.rotation.z=Math.random()*Math.PI*2; },50); setTimeout(()=>{ clearInterval(interval); rollValue=Math.floor(Math.random()*6)+1; rolling=false; },800); }
+              
+              renderer.domElement.addEventListener('click',rollDice);
+              
+              function animate(){ requestAnimationFrame(animate); if(rolling){ } renderer.render(scene,camera); }
+              animate();
+              window.addEventListener('resize',()=>{ camera.aspect=1; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+            <\/script>
+          </body></html>
+        `;
+      }
+    },
+    {
+      name: "SHOOTING",
+      icon: "fa-bullseye",
+      badge: "🎯 TARGET 3D",
+      html: () => {
+        return `
+          <!DOCTYPE html><html><head><style>body{margin:0;overflow:hidden;background:#0a0f1a;cursor:crosshair;}</style></head><body>
+            <div style="position:absolute;top:10px;left:10px;color:white;background:#00000080;padding:5px 15px;border-radius:20px;">🎯 Click to shoot · Score: <span id="score">0</span></div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+            <script>
+              const scene=new THREE.Scene(); scene.background=new THREE.Color(0x1a2b3c);
+              const camera=new THREE.PerspectiveCamera(60,1,0.1,100); camera.position.set(0,2,8);
+              const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth,window.innerHeight); document.body.appendChild(renderer.domElement);
+              scene.add(new THREE.AmbientLight(0x404060));
+              const light=new THREE.PointLight(0xffeedd,1); light.position.set(2,5,5); scene.add(light);
+              
+              let score=0; const scoreSpan=document.getElementById('score');
+              const targets=[]; const raycaster=new THREE.Raycaster(); const mouse=new THREE.Vector2();
+              
+              function createTarget(x,y,z){
+                const group=new THREE.Group(); group.position.set(x,y,z);
+                const ring=new THREE.Mesh(new THREE.TorusGeometry(0.8,0.05,16,32),new THREE.MeshStandardMaterial({color:0xff5555})); group.add(ring);
+                const inner=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,0.1),new THREE.MeshStandardMaterial({color:0xffaa00})); inner.rotation.x=Math.PI/2; group.add(inner);
+                const center=new THREE.Mesh(new THREE.SphereGeometry(0.15),new THREE.MeshStandardMaterial({color:0xff0000,emissive:new THREE.Color(0x440000)})); center.position.z=0.1; group.add(center);
+                group.userData={hit:false}; return group;
+              }
+              
+              for(let i=0;i<6;i++){ const target=createTarget((i%3-1)*2.5,1+Math.random()*2, -3-Math.random()*4); scene.add(target); targets.push(target); }
+              
+              renderer.domElement.addEventListener('click',(e)=>{
+                mouse.x=(e.clientX/renderer.domElement.clientWidth)*2-1; mouse.y=-(e.clientY/renderer.domElement.clientHeight)*2+1;
+                raycaster.setFromCamera(mouse,camera); const intersects=raycaster.intersectObjects(targets,true);
+                if(intersects.length>0){ const hitTarget=intersects[0].object.parent; if(!hitTarget.userData.hit){ hitTarget.userData.hit=true; hitTarget.children[0].material.color.setHex(0x888888); score+=10; scoreSpan.textContent=score; }}
+              });
+              
+              function animate(){ requestAnimationFrame(animate); targets.forEach((t,i)=>{ t.rotation.y+=0.01; t.position.x=Math.sin(Date.now()*0.001+i)*2.5; }); renderer.render(scene,camera); }
+              animate();
+              window.addEventListener('resize',()=>{ camera.aspect=1; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+            <\/script>
+          </body></html>
+        `;
+      }
+    },
+    {
+      name: "ARCHERY",
+      icon: "fa-bow-arrow",
+      badge: "🏹 BOW MASTER",
+      html: () => `<iframe width="100%" height="100%" src="https://www.crazygames.com/embed/archery-world-tour" frameborder="0" allow="gamepad *;"></iframe>`
+    },
+    {
+      name: "CAR RACING",
+      icon: "fa-car",
+      badge: "🏎️ NITRO 3D",
+      html: () => `<iframe width="100%" height="100%" src="https://www.crazygames.com/embed/madalin-stunt-cars-2" frameborder="0" allow="gamepad *;"></iframe>`
+    },
+    {
+      name: "CITY BUILD",
+      icon: "fa-city",
+      badge: "🏗️ 3D SKYLINE",
+      html: () => {
+        return `
+          <!DOCTYPE html><html><head><style>body{margin:0;overflow:hidden;background:#87CEEB;}</style></head><body>
+            <div style="position:absolute;top:10px;left:10px;color:white;background:#00000080;padding:5px 15px;border-radius:20px;">🏗️ Click to place buildings</div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+            <script>
+              const scene=new THREE.Scene(); scene.background=new THREE.Color(0x87CEEB);
+              const camera=new THREE.PerspectiveCamera(60,1,0.1,100); camera.position.set(8,6,12); camera.lookAt(0,0,0);
+              const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth,window.innerHeight); renderer.shadowMap.enabled=true; document.body.appendChild(renderer.domElement);
+              const light=new THREE.DirectionalLight(0xfff5d1,1.2); light.position.set(5,15,8); light.castShadow=true; scene.add(light);
+              scene.add(new THREE.AmbientLight(0x556677));
+              const ground=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshStandardMaterial({color:0x3a754a})); ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+              const raycaster=new THREE.Raycaster(); const mouse=new THREE.Vector2();
+              renderer.domElement.addEventListener('click',(e)=>{
+                mouse.x=(e.clientX/renderer.domElement.clientWidth)*2-1; mouse.y=-(e.clientY/renderer.domElement.clientHeight)*2+1;
+                raycaster.setFromCamera(mouse,camera); const intersects=raycaster.intersectObject(ground);
+                if(intersects.length>0){
+                  const pos=intersects[0].point;
+                  const h=0.5+Math.random()*2;
+                  const building=new THREE.Mesh(new THREE.BoxGeometry(0.8,h,0.8),new THREE.MeshStandardMaterial({color:Math.random()*0x808080+0x808080}));
+                  building.position.set(pos.x,h/2,pos.z); building.castShadow=true; building.receiveShadow=true; scene.add(building);
+                }
+              });
+              function animate(){ requestAnimationFrame(animate); renderer.render(scene,camera); }
+              animate();
+              window.addEventListener('resize',()=>{ camera.aspect=1; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+            <\/script>
+          </body></html>
+        `;
+      }
+    },
+    {
+      name: "PUZZLE",
+      icon: "fa-puzzle-piece",
+      badge: "🧩 MIND BEND",
+      html: () => `<iframe width="100%" height="100%" src="https://www.crazygames.com/embed/3d-puzzle" frameborder="0" allow="gamepad *;"></iframe>`
+    },
+    {
+      name: "MAZE",
+      icon: "fa-draw-polygon",
+      badge: "🌀 LABYRINTH 3D",
+      html: () => {
+        return `
+          <!DOCTYPE html><html><head><style>body{margin:0;overflow:hidden;background:#111;}</style></head><body>
+            <div style="position:absolute;top:10px;left:10px;color:white;background:#00000080;padding:5px 15px;border-radius:20px;">🌀 Use WASD to move</div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+            <script>
+              const scene=new THREE.Scene(); scene.background=new THREE.Color(0x1a1a2e);
+              const camera=new THREE.PerspectiveCamera(75,1,0.1,100); camera.position.set(2,5,8);
+              const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth,window.innerHeight); renderer.shadowMap.enabled=true; document.body.appendChild(renderer.domElement);
+              scene.add(new THREE.AmbientLight(0x404060));
+              const light=new THREE.PointLight(0xffeedd,1); light.position.set(3,8,5); scene.add(light);
+              
+              const walls=[]; const mazeMap=[[1,1,1,1,1],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[1,1,1,1,1]];
+              mazeMap.forEach((row,i)=>{ row.forEach((cell,j)=>{ if(cell){ const w=new THREE.Mesh(new THREE.BoxGeometry(1,2,1),new THREE.MeshStandardMaterial({color:0x8b5e3c})); w.position.set(j-2,1,i-2); w.castShadow=true; w.receiveShadow=true; scene.add(w); walls.push(w); } }); });
+              
+              const player=new THREE.Mesh(new THREE.SphereGeometry(0.3),new THREE.MeshStandardMaterial({color:0xffaa00,emissive:new THREE.Color(0x442200)})); player.position.set(-1,0.3,-1); player.castShadow=true; scene.add(player);
+              
+              const keys={}; document.addEventListener('keydown',e=>keys[e.code]=true); document.addEventListener('keyup',e=>keys[e.code]=false);
+              function animate(){ requestAnimationFrame(animate);
+                const speed=0.1; const oldPos=player.position.clone();
+                if(keys['KeyW']) player.position.z-=speed; if(keys['KeyS']) player.position.z+=speed;
+                if(keys['KeyA']) player.position.x-=speed; if(keys['KeyD']) player.position.x+=speed;
+                walls.forEach(w=>{ if(player.position.distanceTo(w.position)<0.8) player.position.copy(oldPos); });
+                camera.position.set(player.position.x+2,5,player.position.z+5); camera.lookAt(player.position);
+                renderer.render(scene,camera);
+              }
+              animate();
+              window.addEventListener('resize',()=>{ camera.aspect=1; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+            <\/script>
+          </body></html>
+        `;
+      }
+    },
+    {
+      name: "FPS SHOOTING",
+      icon: "fa-crosshairs",
+      badge: "🔫 FIRST PERSON",
+      html: () => `<iframe width="100%" height="100%" src="https://www.crazygames.com/embed/bullet-force-multiplayer" frameborder="0" allow="gamepad *;"></iframe>`
+    },
+    {
+      name: "MATH SOLVER",
+      icon: "fa-calculator",
+      badge: "📐 3D GRAPHS",
+      html: () => {
+        return `
+          <!DOCTYPE html><html><head><style>body{margin:0;overflow:hidden;background:#0d1117;}</style></head><body>
+            <div style="position:absolute;top:10px;left:10px;color:white;background:#00000080;padding:5px 15px;border-radius:20px;">📐 3D Function: z = sin(x) * cos(y)</div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>
+            <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>
+            <script>
+              const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0d1117);
+              const camera=new THREE.PerspectiveCamera(45,1,0.1,100); camera.position.set(5,6,8); camera.lookAt(0,0,0);
+              const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(window.innerWidth,window.innerHeight); document.body.appendChild(renderer.domElement);
+              const controls=new THREE.OrbitControls(camera,renderer.domElement); controls.enableDamping=true;
+              scene.add(new THREE.AmbientLight(0x404060));
+              const light=new THREE.PointLight(0xffaa88,1); light.position.set(5,10,5); scene.add(light);
+              
+              const grid=new THREE.GridHelper(10,20,0xffaa00,0x334466); scene.add(grid);
+              const geometry=new THREE.BufferGeometry(); const vertices=[]; const size=5,segments=50;
+              for(let i=0;i<=segments;i++){ const x=(i/segments-0.5)*size*2; for(let j=0;j<=segments;j++){ const y=(j/segments-0.5)*size*2; const z=Math.sin(x)*Math.cos(y)*1.5; vertices.push(x,z,y); } }
+              geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+              const material=new THREE.PointsMaterial({color:0x66ccff,size:0.05}); const points=new THREE.Points(geometry,material); scene.add(points);
+              
+              function animate(){ requestAnimationFrame(animate); controls.update(); renderer.render(scene,camera); }
+              animate();
+              window.addEventListener('resize',()=>{ camera.aspect=1; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); });
+            <\/script>
+          </body></html>
+        `;
+      }
+    }
+  ];
+
+  // Render games
+  const container = document.getElementById('gamesContainer');
+  
+  games.forEach((game, index) => {
+    const card = document.createElement('div');
+    card.className = 'game-card';
+    
+    const header = document.createElement('div');
+    header.className = 'game-header';
+    header.innerHTML = `
+      <i class="fas ${game.icon}"></i>
+      <h2>${game.name}</h2>
+      <span class="badge">${game.badge}</span>
+    `;
+    
+    const frame = document.createElement('iframe');
+    frame.className = 'game-frame';
+    frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    frame.setAttribute('allowfullscreen', '');
+    frame.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms allow-modals');
+    
+    // Set srcdoc for custom games, src for embedded
+    if (index === 0 || index === 1 || index === 2 || index === 5 || index === 7 || index === 9) {
+      frame.srcdoc = game.html();
+    } else {
+      frame.src = game.html().match(/src="([^"]+)"/)[1];
+    }
+    
+    const controls = document.createElement('div');
+    controls.className = 'game-controls';
+    controls.innerHTML = `
+      <button onclick="refreshGame(this)"><i class="fas fa-redo-alt"></i> Restart</button>
+      <button class="fullscreen-btn" onclick="openFullscreen('${game.name}', ${index})"><i class="fas fa-expand"></i> Fullscreen</button>
+    `;
+    
+    card.appendChild(header);
+    card.appendChild(frame);
+    card.appendChild(controls);
+    container.appendChild(card);
+  });
+
+  // Store frames for access
+  const frames = [];
+  
+  function refreshGame(btn) {
+    const card = btn.closest('.game-card');
+    const frame = card.querySelector('iframe');
+    frame.src = frame.src; // Reload
+  }
+  
+  function openFullscreen(title, index) {
+    const modal = document.getElementById('gameModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalFrame = document.getElementById('modalFrame');
+    
+    modalTitle.textContent = title;
+    if (index === 0 || index === 1 || index === 2 || index === 5 || index === 7 || index === 9) {
+      modalFrame.srcdoc = games[index].html();
+    } else {
+      modalFrame.src = games[index].html().match(/src="([^"]+)"/)[1];
+    }
+    modal.style.display = 'block';
+  }
+  
+  function closeModal() {
+    document.getElementById('gameModal').style.display = 'none';
+    document.getElementById('modalFrame').src = '';
+    document.getElementById('modalFrame').srcdoc = '';
+  }
+  
+  // Close modal on escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+  
+  // Click outside to close
+  document.getElementById('gameModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('gameModal')) closeModal();
+  });
+</script>
+</body>
+</html>
